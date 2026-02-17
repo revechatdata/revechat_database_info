@@ -67,6 +67,26 @@ SELECT
     usAccountStatus,
     isActive
 FROM vbuser as v
-WHERE usAccount = 3753016;
+WHERE usAccount = {{place your account id here}};
 ```
 
+
+### Retrive user information using email address
+
+```sql
+SELECT 
+    ID,
+    usAccount,
+    usrMailAddr,
+    usPassword,
+    CASE 
+        WHEN usRoleID = 1 THEN 'Super Admin'
+        WHEN usRoleID = 2 THEN 'Admin'
+        WHEN usRoleID = 3 THEN 'Agent'
+        ELSE 'Custom Role'
+    END AS role_name,
+    usAccountStatus,
+    isActive
+FROM vbuser as v
+WHERE usrMailAddr like '%place your email address here%';
+```
