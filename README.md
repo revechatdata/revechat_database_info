@@ -46,6 +46,27 @@ The `vbuser` table stores user account information, authentication details, prof
 
 ## Notes
 
-- Some timestamps are stored as Unix epoch values.
+- Timestamps are stored as Unix epoch values.
 - Plain password storage is not recommended for production systems.
 - Consider indexing frequently queried fields like `usAccount`, `usrMailAddr`, and `usRoleID`.
+
+
+### Retrive user information using account id
+```sql
+SELECT 
+    ID,
+    usAccount,
+    usrMailAddr,
+    usPassword,
+    CASE 
+        WHEN usRoleID = 1 THEN 'Super Admin'
+        WHEN usRoleID = 2 THEN 'Admin'
+        WHEN usRoleID = 3 THEN 'Agent'
+        ELSE 'Custom Role'
+    END AS role_name,
+    usAccountStatus,
+    isActive
+FROM vbuser as v
+WHERE usAccount = 3753016;
+```
+
