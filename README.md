@@ -158,4 +158,73 @@ The `vbmissedchats` table stores information about missed chat sessions, includi
 Most time-related columns store **epoch timestamps in milliseconds**.
 
 
+### Retrive Account-wise Chat Request Count
 
+```sql
+SELECT 
+    COUNT(*) AS chatreq_count
+FROM vbmissedchats
+WHERE vbAccount = 'your_account_id_here'
+;
+```
+
+### Retrive Account-wise Chat Request Count
+
+```sql
+SELECT 
+    DATE(FROM_UNIXTIME(chatRequestTime / 1000)) AS chat_date,
+    COUNT(*) AS chatreq_count
+FROM vbmissedchats
+WHERE vbAccount = 'YOUR_ACCOUNT_ID'
+GROUP BY DATE(FROM_UNIXTIME(chatRequestTime / 1000))
+ORDER BY chat_date ASC;
+```
+
+### Day-wise Count with Date Range Filter
+
+```sql
+SELECT 
+    DATE(FROM_UNIXTIME(chatRequestTime / 1000)) AS chat_date,
+    COUNT(*) AS chatreq_count
+FROM vbmissedchats
+WHERE vbAccount = 'YOUR_ACCOUNT_ID'
+AND FROM_UNIXTIME(chatRequestTime / 1000) 
+    BETWEEN '2026-02-01' AND '2026-02-28'
+GROUP BY DATE(FROM_UNIXTIME(chatRequestTime / 1000))
+ORDER BY chat_date ASC;
+```
+
+### Retrive FRT Breach Count for an Account
+
+```sql
+SELECT 
+    vbAccount,
+    COUNT(*) AS frt_breach_count
+FROM vbmissedchats
+WHERE vbAccount = 'YOUR_ACCOUNT_ID'
+  AND frt_breach = 1
+GROUP BY vbAccount;
+```
+-- Add Date Filter (If Needed) 
+```sql
+AND FROM_UNIXTIME(chatRequestTime / 1000)
+    BETWEEN '2026-02-01' AND '2026-02-28'
+```
+
+
+### Retrive ERT Breach Count for an Account
+
+```sql
+SELECT 
+    vbAccount,
+    COUNT(*) AS frt_breach_count
+FROM vbmissedchats
+WHERE vbAccount = 'YOUR_ACCOUNT_ID'
+  AND ert_breach = 1
+GROUP BY vbAccount;
+```
+-- Add Date Filter (If Needed) 
+```sql
+AND FROM_UNIXTIME(chatRequestTime / 1000)
+    BETWEEN '2026-02-01' AND '2026-02-28'
+```
