@@ -293,7 +293,7 @@ FROM vbsingle_message;
 
 ---
 
-## 📊 Functional Coverage
+## Functional Coverage
 
 - Agent & Visitor Messaging
 - Message Tracking
