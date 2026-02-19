@@ -296,3 +296,85 @@ All timestamp columns (`created`, `updated`) are stored in **epoch format (milli
 
 ---
 
+# vbbotinfo Table Documentation
+
+## Table Overview
+
+The `vbbotinfo` table stores chatbot configuration details including bot identity, metadata, language settings, channel enablement, ML configuration, UI positioning, and lifecycle status.
+
+This table acts as the primary configuration registry for bots under different accounts.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Default | Nullable | Description |
+|-------------|------------|----------|------------|-------------|
+| id | bigint(20) | AUTO_INCREMENT | NO | Primary key |
+| vbAccount | varchar(20) | NULL | YES | Account identifier |
+| botId | varchar(200) | NULL | YES | Unique bot identifier |
+| botName | varchar(200) | NULL | YES | Internal bot name |
+| botBody | longtext | NULL | YES | Bot flow definition / configuration body |
+| last_update | decimal(20,0) | NULL | YES | Last update timestamp (epoch ms) |
+| avatar_name | varchar(100) | NULL | YES | Bot avatar name |
+| is_social_channel_enabled | tinyint(4) | NULL | YES | Social channel enable flag |
+| sampleBot | int(11) | 0 | YES | Indicates if bot is sample bot |
+| displayName | varchar(255) | NULL | YES | Public display name of the bot |
+| tagLine | varchar(255) | NULL | YES | Bot tagline |
+| trigger_event | text | NULL | YES | Trigger event configuration |
+| is_web_channel_enabled | tinyint(4) | NULL | YES | Web channel enable flag |
+| isDraft | int(11) | 0 | YES | Draft status flag |
+| fallback_settings | text | NULL | YES | Fallback configuration settings |
+| google_login | text | NULL | YES | Google login integration settings |
+| bot_accuracy_level | double(3,2) | 0.50 | YES | ML accuracy threshold |
+| greeting_message | text | NULL | YES | Bot greeting message |
+| language_message | text | NULL | YES | Language selection message |
+| is_bot_enabled | tinyint(4) | 1 | YES | Bot active status flag |
+| enabledSocialChannels | varchar(250) | NULL | YES | List of enabled social channels |
+| created | bigint(20) | NULL | YES | Creation timestamp (epoch ms) |
+| updated | bigint(20) | NULL | YES | Last update timestamp (epoch ms) |
+| is_sample_new | int(11) | NULL | YES | New sample bot indicator |
+| botMetaInfo_ID | bigint(20) | NULL | YES | Bot meta information reference ID |
+| is_deleted | bit(1) | - | NO | Soft delete flag |
+| ml_model_file_name | text | NULL | YES | ML model file name |
+| description | varchar(255) | NULL | YES | Bot description |
+| supported_language | varchar(200) | NULL | YES | Supported languages list |
+| webpage_settings | text | NULL | YES | Web widget configuration |
+| is_mobile_sdk_channel_enabled | tinyint(4) | 0 | YES | Mobile SDK channel enable flag |
+| is_knowledgebase_connected | tinyint(4) | 0 | YES | Knowledgebase integration flag |
+| build_with | varchar(20) | CUSTOM | YES | Bot build type (CUSTOM / AI / etc.) |
+| positionX | decimal(10,2) | NULL | YES | UI X-axis position |
+| positionY | decimal(10,2) | NULL | YES | UI Y-axis position |
+| startNodeId | bigint(20) | NULL | YES | Starting node ID of bot flow |
+| languageCode | varchar(100) | en | YES | Default language code |
+| version | bigint(20) | 0 | YES | Bot version number |
+| is_updated | tinyint(1) | 1 | YES | Indicates if bot is updated |
+
+---
+
+## Time Format Notes
+
+Timestamp columns (`created`, `updated`, `last_update`) are stored in **epoch format (milliseconds)**.
+
+Example conversion in MySQL:
+
+```sql
+SELECT FROM_UNIXTIME(created / 1000)
+FROM vbbotinfo;
+```
+
+---
+
+## Functional Coverage
+
+- Bot Identity & Metadata
+- Channel Enablement (Web, Social, Mobile SDK)
+- ML Model Configuration
+- Greeting & Fallback Management
+- Draft & Version Control
+- Language & Localization Settings
+- Knowledgebase Integration
+- UI Positioning
+- Soft Delete & Lifecycle Management
+
+---
