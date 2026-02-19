@@ -98,13 +98,13 @@ select * from vbmissedchats;
 ```
 # vbmissedchats Table Documentation
 
-## 📌 Table Overview
+## Table Overview
 
 The `vbmissedchats` table stores information about missed chat sessions, including assignment details, timestamps, SLA metrics, response times, queue information, sentiment analysis, and billing status.
 
 ---
 
-## 🗂 Table Structure
+## Table Structure
 
 | Column Name | Data Type | Default | Nullable | Description |
 |-------------|------------|----------|------------|-------------|
@@ -153,7 +153,7 @@ The `vbmissedchats` table stores information about missed chat sessions, includi
 
 ---
 
-## 🧮 Time Format Notes
+## Time Format Notes
 
 Most time-related columns store **epoch timestamps in milliseconds**.
 
