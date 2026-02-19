@@ -436,3 +436,37 @@ All timestamp-related fields (`timestamp`, `startTime`, `endTime`) are stored in
 - Billing Monitoring
 
 ---
+
+### Account-wise Bot Conversation Count
+```sql
+SELECT 
+    account,
+    COUNT(*) AS conversation_count
+FROM bot_conversations
+GROUP BY account
+ORDER BY conversation_count DESC;
+```
+
+### Day-wise Conversation Count for a Specific Account
+```sql
+SELECT 
+    DATE(FROM_UNIXTIME(timestamp / 1000)) AS conversation_date,
+    COUNT(*) AS conversation_count
+FROM bot_conversations
+WHERE account = 'YOUR_ACCOUNT_ID'
+GROUP BY DATE(FROM_UNIXTIME(timestamp / 1000))
+ORDER BY conversation_date ASC;
+```
+
+### Channel-wise Conversation Count
+```sql
+SELECT 
+    c.channel_name,
+    COUNT(b.id) AS conversation_count
+FROM bot_conversations b
+LEFT JOIN channellistentity c
+    ON b.channelType = c.channel_code and c.service_name = 'chatbot'
+GROUP BY c.channel_name
+ORDER BY conversation_count DESC;
+```
+
