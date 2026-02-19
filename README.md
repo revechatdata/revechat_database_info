@@ -701,3 +701,68 @@ WHERE accountId = 'YOUR_ACCOUNT_ID'
   AND isDrafted = b'1'
 GROUP BY accountId;
 ```
+
+
+# billing_subscription Table Documentation
+
+## Table Overview
+
+The `billing_subscription` table stores subscription and billing information for customer accounts.  
+It tracks package details, pricing, discounts, billing periods, temporary migration data, tax, and subscription status.
+
+This table is primarily used for subscription lifecycle management, billing calculations, and financial reporting.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Default | Nullable | Description |
+|-------------|------------|----------|------------|-------------|
+| id | bigint(20) | AUTO_INCREMENT | NO | Primary key |
+| addons_price | double | NULL | YES | Price of add-ons applied to subscription |
+| agent_count | int(11) | - | NO | Number of active agents in subscription |
+| balance | double | NULL | YES | Current subscription balance |
+| billing_currency | varchar(255) | NULL | YES | Currency used for billing |
+| created | bigint(20) | - | NO | Subscription creation timestamp (epoch ms) |
+| creator_id | bigint(20) | NULL | YES | User ID who created the subscription |
+| customer_id | varchar(255) | NULL | YES | Customer identifier |
+| discount | double | NULL | YES | Discount applied to subscription |
+| end_date | bigint(20) | NULL | YES | Subscription end date (epoch ms) |
+| migration_status | int(11) | NULL | YES | Migration status indicator |
+| month_count | int(11) | NULL | YES | Subscription duration in months |
+| operator_code | varchar(255) | - | NO | Account/operator identifier |
+| package_code | int(11) | - | NO | Package identifier |
+| payment_method_token | varchar(255) | NULL | YES | Payment method reference token |
+| start_date | bigint(20) | - | NO | Subscription start date (epoch ms) |
+| status | int(11) | - | NO | Subscription status code [2: 14 days Trail 1: Customer] | 
+| tmp_agent_count | int(11) | - | NO | Temporary agent count (pending update) |
+| tmp_balance | double | NULL | YES | Temporary balance |
+| tmp_billing_currency | varchar(255) | NULL | YES | Temporary billing currency |
+| tmp_discount | double | NULL | YES | Temporary discount |
+| tmp_end_date | bigint(20) | NULL | YES | Temporary end date |
+| tmp_month_count | int(11) | NULL | YES | Temporary subscription duration |
+| tmp_package_code | int(11) | - | NO | Temporary package code |
+| tmp_start_date | bigint(20) | NULL | YES | Temporary start date |
+| used_coupon_id | bigint(20) | NULL | YES | Applied coupon ID |
+| tax | double | 0 | YES | Tax amount applied |
+
+---
+
+## Time Format Notes
+
+Timestamp fields (`created`, `start_date`, `end_date`, `tmp_start_date`, `tmp_end_date`) are stored in **epoch format (milliseconds)**.
+
+---
+
+## Functional Coverage
+
+- Subscription Lifecycle Management
+- Package & Agent Allocation
+- Billing & Balance Tracking
+- Discount & Coupon Handling
+- Temporary Migration Handling
+- Tax Calculation
+- Subscription Status Monitoring
+
+---
+
