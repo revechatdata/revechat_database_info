@@ -614,3 +614,59 @@ WHERE accountId = 'YOUR_ACCOUNT_ID'
   AND isDrafted = 1
 GROUP BY accountId;
 ```
+
+
+# vbscriptsettings Table Documentation
+
+## Table Overview
+
+The `vbscriptsettings` table stores script configuration settings for accounts.  
+It manages script definitions, publishing state, draft state, testing status, metadata, and script payload configuration.
+
+This table is typically used for automation scripts, workflow scripts, or account-level scripting configurations.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Default | Nullable | Description |
+|-------------|------------|----------|------------|-------------|
+| id | bigint(20) | AUTO_INCREMENT | NO | Primary key |
+| name | varchar(255) | - | NO | Script configuration name |
+| created | bigint(20) | NULL | YES | Creation timestamp (epoch ms) |
+| updated | bigint(20) | NULL | YES | Last update timestamp (epoch ms) |
+| createdBy | bigint(20) | NULL | YES | User ID who created the script |
+| updatedBy | bigint(20) | NULL | YES | User ID who last updated the script |
+| accountId | varchar(255) | NULL | YES | Account identifier |
+| description | longtext | NULL | YES | Description of the script configuration |
+| isPublished | bit(1) | 0 | YES | Indicates if the script is published |
+| isDrafted | bit(1) | 0 | YES | Indicates if the script is in draft state |
+| data | longtext | NULL | YES | Script configuration payload (JSON or structured data) |
+| isTested | bit(1) | 0 | YES | Indicates if the script has been tested |
+
+---
+
+## Time Format Notes
+
+Timestamp fields (`created`, `updated`) are stored in **epoch format (milliseconds)**.
+
+---
+
+## Functional Coverage
+
+- Script Configuration Management
+- Draft & Publish Lifecycle Control
+- Testing Status Tracking
+- Account-level Script Segmentation
+
+---
+
+## Related Modules
+
+- API Settings (`vbapisettings`)
+- Bot Configuration (`vbbotinfo`)
+- Live Chat / Automation Engine
+- Account Configuration Management
+
+---
+
