@@ -253,3 +253,53 @@ LEFT JOIN channellistentity c
 GROUP BY c.channel_name
 ORDER BY chatreq_count DESC;
 ```
+
+# vbsingle_message Table Documentation
+
+## Table Overview
+
+The `vbsingle_message` table stores individual chat messages exchanged between agents and visitors.  
+It contains message metadata, delivery status, timestamps, and message content.
+
+---
+
+## Table Structure
+
+| Column Name   | Data Type     | Default | Nullable | Description |
+|---------------|--------------|----------|------------|-------------|
+| id | bigint(20) | AUTO_INCREMENT | NO | Primary key |
+| created | bigint(20) | NULL | YES | Message creation timestamp (epoch ms) |
+| updated | bigint(20) | NULL | YES | Message last update timestamp (epoch ms) |
+| agentId | bigint(20) | NULL | YES | Agent ID who sent the message |
+| chatInfoId | bigint(20) | NULL | YES | Related chat/session ID |
+| messageType | varchar(255) | NULL | YES | Type of message (text, image, file, etc.) |
+| msg | mediumtext | NULL | YES | Message content |
+| visitorId | bigint(20) | NULL | YES | Visitor ID who sent/received message |
+| messageId | varchar(190) | NULL | YES | Unique external message identifier |
+| deliveryStatus | varchar(20) | NULL | YES | Delivery status (sent, delivered, read, failed, etc.) |
+
+---
+
+## Time Format Notes
+
+All timestamp columns (`created`, `updated`) are stored in **epoch format (milliseconds)**.
+
+Example conversion in MySQL:
+
+```sql
+SELECT FROM_UNIXTIME(created / 1000)
+FROM vbsingle_message;
+```
+
+---
+
+## 📊 Functional Coverage
+
+- Agent & Visitor Messaging
+- Message Tracking
+- Delivery Status Monitoring
+- Message Type Classification
+- Session-based Message Linking
+
+---
+
