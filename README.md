@@ -766,3 +766,79 @@ Timestamp fields (`created`, `start_date`, `end_date`, `tmp_start_date`, `tmp_en
 
 ---
 
+
+# billing_package Table Documentation
+
+## Table Overview
+
+The `billing_package` table stores subscription package details.  
+Each package defines pricing per agent and acts as a reference for subscriptions in the `billing_subscription` table.
+
+This table is primarily used for:
+- Subscription pricing calculations
+- Package management
+- Revenue computation
+- Billing configuration
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Default | Nullable | Description |
+|-------------|------------|----------|------------|-------------|
+| id | bigint(20) | AUTO_INCREMENT | NO | Primary key |
+| code | int(11) | - | NO | Unique package code (used in subscription table) |
+| monthly_rate_per_agent | int(11) | - | NO | Monthly cost per agent |
+| name | varchar(255) | - | NO | Package name |
+
+Relationship logic:
+
+```
+billing_subscription.package_code = billing_package.code
+```
+
+### SQL to find out currently active clients 
+```sql
+SELECT 
+    bs.id,
+    bs.operator_code,
+    bp.name as package_name,
+    bs.agent_count,
+    bs.addons_price,
+    bs.balance,
+    bs.billing_currency,
+    bs.discount,
+    bs.month_count,
+    bs.status,
+    bs.migration_status,
+    bs.customer_id,
+    bs.payment_method_token,
+    bs.used_coupon_id,
+-- 
+    -- Formatted Date Columns
+    FROM_UNIXTIME(bs.created / 1000)        AS created_datetime,
+    FROM_UNIXTIME(bs.start_date / 1000)     AS start_datetime,
+    FROM_UNIXTIME(bs.end_date / 1000)       AS end_datetime,
+    FROM_UNIXTIME(bs.tmp_start_date / 1000) AS tmp_start_datetime,
+    FROM_UNIXTIME(bs.tmp_end_date / 1000)   AS tmp_end_datetime,
+-- 
+    -- Temporary Fields
+    bs.tmp_agent_count,
+    bs.tmp_balance,
+    bs.tmp_billing_currency,
+    bs.tmp_discount,
+    bs.tmp_month_count,
+    bs.tmp_package_code
+-- 
+FROM billing_subscription bs
+JOIN (
+    SELECT operator_code, MAX(id) AS max_id
+    FROM billing_subscription
+    GROUP BY operator_code
+) latest 
+    ON bs.operator_code = latest.operator_code 
+   AND bs.id = latest.max_id
+-- 
+JOIN billing_package bp ON bp.code = bs.package_code  
+WHERE FROM_UNIXTIME(bs.end_date / 1000) >= CURDATE();
+```
