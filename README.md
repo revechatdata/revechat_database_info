@@ -1,4 +1,4 @@
-# revechat_database_info
+# REVE Chat Database Info
 
 # vbuser Table Documentation
 
