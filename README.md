@@ -228,3 +228,28 @@ GROUP BY vbAccount;
 AND FROM_UNIXTIME(chatRequestTime / 1000)
     BETWEEN '2026-02-01' AND '2026-02-28'
 ```
+
+### Channel-wise Chat Request Count for a Specific Account
+
+```sql
+SELECT 
+    channelType,
+    COUNT(*) AS chatreq_count
+FROM vbmissedchats
+WHERE vbAccount = 'YOUR_ACCOUNT_ID'
+GROUP BY channelType
+ORDER BY chatreq_count DESC;
+```
+
+-- If you want to map channelType numbers to readable names (Web, WhatsApp, Facebook, etc.)
+
+```sql
+SELECT 
+    c.channel_name,
+    COUNT(v.ID) AS chatreq_count
+FROM vbmissedchats v
+LEFT JOIN channellistentity c 
+    ON v.channelType = c.channel_code and c.service_name = 'livechat'
+GROUP BY c.channel_name
+ORDER BY chatreq_count DESC;
+```
