@@ -378,3 +378,61 @@ FROM vbbotinfo;
 - Soft Delete & Lifecycle Management
 
 ---
+
+
+# bot_conversations Table Documentation
+
+## Table Overview
+
+The `bot_conversations` table stores aggregated chatbot conversation data per visitor session.  
+It includes conversation metadata, engagement metrics, fallback tracking, sentiment, handover status, and billing information.
+
+This table is typically used for analytics, reporting, and bot performance monitoring.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Default | Nullable | Description |
+|-------------|------------|----------|------------|-------------|
+| id | bigint(20) | AUTO_INCREMENT | NO | Primary key |
+| visitor_id | bigint(20) | - | NO | Visitor identifier |
+| message | longtext | - | NO | Full aggregated conversation message/body |
+| account | varchar(15) | - | NO | Account identifier |
+| timestamp | bigint(20) | - | NO | Conversation creation timestamp (epoch ms) |
+| channelType | tinyint(1) | NULL | YES | Channel type identifier |
+| isAggregated | tinyint(1) | 0 | YES | Aggregation status flag |
+| vsRecordId | bigint(20) | NULL | YES | Visitor session record ID |
+| botId | bigint(20) | NULL | YES | Bot identifier |
+| numberOfMessage | bigint(20) | NULL | YES | Total number of messages in conversation |
+| startTime | bigint(20) | 0 | YES | Conversation start time (epoch ms) |
+| endTime | bigint(20) | 0 | YES | Conversation end time (epoch ms) |
+| endedBy | int(11) | 0 | YES | Indicates who ended the conversation |
+| fallbackCount | int(11) | 0 | YES | Number of fallback responses triggered |
+| openEndedQueryCount | int(11) | 0 | YES | Count of open-ended user queries |
+| is_aggregated_analytics | int(11) | 0 | YES | Analytics aggregation flag |
+| isHumanHandover | tinyint(1) | 0 | YES | Indicates bot-to-human handover |
+| completedGoalCount | int(11) | 0 | YES | Number of successfully completed goals |
+| sentiment | varchar(50) | NULL | YES | Conversation sentiment analysis result |
+| is_billed | tinyint(1) | 0 | NO | Billing status flag |
+
+---
+
+## Time Format Notes
+
+All timestamp-related fields (`timestamp`, `startTime`, `endTime`) are stored in **epoch format (milliseconds)**.
+
+
+## Functional Coverage
+
+- Bot Conversation Storage
+- Conversation Aggregation
+- Performance Analytics
+- Fallback Monitoring
+- Open-Ended Query Tracking
+- Goal Completion Tracking
+- Sentiment Analysis
+- Human Handover Tracking
+- Billing Monitoring
+
+---
