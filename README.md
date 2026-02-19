@@ -90,3 +90,72 @@ SELECT
 FROM vbuser as v
 WHERE usrMailAddr like '%place your email address here%';
 ```
+
+### Retrive livechat information using account id
+
+```sql
+select * from vbmissedchats;
+```
+# vbmissedchats Table Documentation
+
+## 📌 Table Overview
+
+The `vbmissedchats` table stores information about missed chat sessions, including assignment details, timestamps, SLA metrics, response times, queue information, sentiment analysis, and billing status.
+
+---
+
+## 🗂 Table Structure
+
+| Column Name | Data Type | Default | Nullable | Description |
+|-------------|------------|----------|------------|-------------|
+| ID | bigint(20) | AUTO_INCREMENT | NO | Primary key |
+| vbAccount | varchar(20) | NULL | YES | Account identifier |
+| assignedAgentID | bigint(20) | - | NO | Assigned agent ID |
+| assignedVisitorID | bigint(20) | - | NO | Assigned visitor ID |
+| vsRecordID | bigint(20) | NULL | YES | Visitor session record ID |
+| chatStatus | int(11) | NULL | YES | Chat status code |
+| dateTimeStamp | decimal(20,0) | - | NO | Chat record timestamp (epoch) |
+| chatRequestTime | decimal(20,0) | - | NO | Chat request time (epoch) |
+| chatResponseTime | decimal(20,0) | - | NO | Chat response time (epoch) |
+| isMissed | char(1) | '1' | NO | Indicates if chat was missed (1 = Yes) |
+| chatRequestType | char(1) | '1' | NO | Type of chat request |
+| isTransferred | int(11) | -1 | YES | Transfer status |
+| channelType | smallint(6) | 0 | YES | Channel type (Web, WhatsApp, etc.) |
+| departmentId | bigint(20) | 0 | YES | Department ID |
+| isTriggered | char(1) | '0' | YES | Whether chat was trigger-based |
+| isHumanHandover | char(1) | '0' | YES | Indicates bot-to-human handover |
+| chatTag | varchar(255) | 'Unreplied' | YES | Chat tag |
+| subject | varchar(255) | '' | YES | Chat subject |
+| vsChatEndedBy | tinyint(1) | -1 | YES | Who ended the chat |
+| vsConversationStartTime | bigint(20) | 0 | YES | Conversation start time |
+| vsConversationEndTime | bigint(20) | 0 | YES | Conversation end time |
+| isQueued | tinyint(4) | 0 | YES | Whether chat was queued |
+| queuePopTime | bigint(20) | 0 | YES | Queue pop time |
+| chatDropTime | bigint(20) | 0 | YES | Chat drop time |
+| firstResponseTime | bigint(20) | NULL | YES | First response time (ms) |
+| avgResponseTime | bigint(20) | NULL | YES | Average response time (ms) |
+| isAggregated | tinyint(1) | 0 | YES | Aggregation flag |
+| is_agent_chat_processed | tinyint(1) | 0 | YES | Agent chat processed flag |
+| last_aggregation_timestamp | decimal(20,0) | 0 | YES | Last aggregation timestamp |
+| isOutOfBusinessHour | tinyint(1) | -1 | YES | Out-of-business-hour indicator |
+| chatCloseRemark | text | NULL | YES | Closing remarks |
+| totalResponseTime | bigint(20) | 0 | YES | Total response time (ms) |
+| messageCountForResponseTime | int(11) | 0 | YES | Message count used for response time |
+| frt_breach | tinyint(1) | 0 | YES | First response time SLA breach flag |
+| ert_breach | tinyint(1) | 0 | YES | Every response time SLA breach flag |
+| slaId | bigint(20) | 0 | YES | SLA ID |
+| chatAssignedTime | bigint(20) | 0 | YES | Chat assigned timestamp |
+| initialResponseTime | bigint(20) | NULL | YES | Initial response time |
+| isDeleted | char(1) | '0' | YES | Soft delete flag |
+| sentiment | varchar(50) | NULL | YES | Chat sentiment |
+| snoozeDuration | bigint(20) | NULL | YES | Snooze duration (ms) |
+| is_billed | tinyint(1) | 0 | NO | Billing status flag |
+
+---
+
+## 🧮 Time Format Notes
+
+Most time-related columns store **epoch timestamps in milliseconds**.
+
+
+
