@@ -670,3 +670,34 @@ Timestamp fields (`created`, `updated`) are stored in **epoch format (millisecon
 
 ---
 
+### Total Script Count for a Specific Account
+```sql
+SELECT 
+    accountId,
+    COUNT(*) AS script_count
+FROM vbscriptsettings
+WHERE accountId = 'YOUR_ACCOUNT_ID'
+GROUP BY accountId;
+```
+
+### Published Script Count
+```sql
+SELECT 
+    accountId,
+    COUNT(*) AS published_script_count
+FROM vbscriptsettings
+WHERE accountId = 'YOUR_ACCOUNT_ID'
+  AND isPublished = 1
+GROUP BY accountId;
+```
+
+### Draft Script Count
+```sql
+SELECT 
+    accountId,
+    COUNT(*) AS draft_script_count
+FROM vbscriptsettings
+WHERE accountId = 'YOUR_ACCOUNT_ID'
+  AND isDrafted = b'1'
+GROUP BY accountId;
+```
