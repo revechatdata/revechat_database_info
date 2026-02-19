@@ -847,29 +847,61 @@ WHERE FROM_UNIXTIME(bs.end_date / 1000) >= CURDATE();
 ### SQL to find out currently active clients system calculated MRR
 
 ```sql
-select bs2.operator_code ,tbl_user.usrMailAddr, bp.name as package_name , bs2.agent_count, bs2.tmp_discount 
-,datediff(date(from_unixtime(bs2.end_date/1000)), date(from_unixtime(bs2.start_date/1000))) as last_subscription_duration,
-date(from_unixtime(bs2.end_date/1000)) as end_date ,
-CASE
-    WHEN month_count = 1 THEN 
-        ROUND((bp.monthly_rate_per_agent * agent_count) + addons_price - tmp_discount, 2)
-    WHEN month_count = 12 THEN 
-        ROUND((CAST(bp.monthly_rate_per_agent AS DECIMAL(10,2)) * CAST(agent_count AS DECIMAL(10,2))) + (addons_price / 12) - (tmp_discount / 12), 2)
-    WHEN month_count = 24 THEN 
-        ROUND((bp.monthly_rate_per_agent * agent_count) + (addons_price / 24) - (tmp_discount / 24), 2)
-END AS mrr
-from (
-select bs.operator_code , max(id) as mxid
-from revechat.billing_subscription bs 
-group by 1
-) as tbl 
-inner join revechat.billing_subscription bs2 on bs2.id = tbl.mxid
-inner join revechat.billing_package bp on bp.code = bs2.package_code 
-left join (
-select v.usAccount , v.usrMailAddr 
-from revechat.vbuser v 
-where v.usRoleID =1
-) as tbl_user on tbl_user.usAccount = bs2.operator_code 
-where from_unixtime(bs2.end_date/1000)>= current_date()  
-and datediff(date(from_unixtime(bs2.end_date/1000)), date(from_unixtime(bs2.start_date/1000))) not in (13,14)
+
+SELECT 
+    bs2.operator_code,
+    tbl_user.usrMailAddr,
+    bp.name AS package_name,
+    bs2.agent_count,
+    bs2.tmp_discount,
+    DATEDIFF(
+        DATE(FROM_UNIXTIME(bs2.end_date / 1000)),
+        DATE(FROM_UNIXTIME(bs2.start_date / 1000))
+    ) AS last_subscription_duration,
+    DATE(FROM_UNIXTIME(bs2.end_date / 1000)) AS end_date,
+    CASE
+        WHEN month_count = 1 THEN 
+            ROUND(
+                (bp.monthly_rate_per_agent * agent_count) 
+                + addons_price 
+                - tmp_discount, 
+            2)
+        WHEN month_count = 12 THEN 
+            ROUND(
+                (CAST(bp.monthly_rate_per_agent AS DECIMAL(10,2)) 
+                * CAST(agent_count AS DECIMAL(10,2))) 
+                + (addons_price / 12) 
+                - (tmp_discount / 12), 
+            2)
+        WHEN month_count = 24 THEN 
+            ROUND(
+                (bp.monthly_rate_per_agent * agent_count) 
+                + (addons_price / 24) 
+                - (tmp_discount / 24), 
+            2)
+    END AS mrr
+FROM (
+    SELECT 
+        bs.operator_code,
+        MAX(id) AS mxid
+    FROM revechat.billing_subscription bs
+    GROUP BY bs.operator_code
+) AS tbl
+INNER JOIN revechat.billing_subscription bs2 
+    ON bs2.id = tbl.mxid
+INNER JOIN revechat.billing_package bp 
+    ON bp.code = bs2.package_code
+LEFT JOIN (
+    SELECT 
+        v.usAccount,
+        v.usrMailAddr
+    FROM revechat.vbuser v
+    WHERE v.usRoleID = 1
+) AS tbl_user 
+    ON tbl_user.usAccount = bs2.operator_code
+WHERE FROM_UNIXTIME(bs2.end_date / 1000) >= CURRENT_DATE()
+AND DATEDIFF(
+        DATE(FROM_UNIXTIME(bs2.end_date / 1000)),
+        DATE(FROM_UNIXTIME(bs2.start_date / 1000))
+) NOT IN (13, 14);
 ```
