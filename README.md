@@ -524,3 +524,93 @@ GROUP BY c.channel_name
 ORDER BY conversation_count DESC;
 ```
 
+
+
+# vbapisettings Table Documentation
+
+## Table Overview
+
+The `vbapisettings` table stores API configuration settings for accounts.  
+It manages API definitions, publishing state, testing status, metadata, and configuration payload.
+
+This table is typically used for Live Chat API, Bot API, or other integration configurations.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Default | Nullable | Description |
+|-------------|------------|----------|------------|-------------|
+| id | bigint(20) | AUTO_INCREMENT | NO | Primary key |
+| name | varchar(255) | - | NO | API configuration name |
+| created | bigint(20) | NULL | YES | Creation timestamp (epoch ms) |
+| updated | bigint(20) | NULL | YES | Last update timestamp (epoch ms) |
+| createdBy | bigint(20) | NULL | YES | User ID who created the configuration |
+| updatedBy | bigint(20) | NULL | YES | User ID who last updated the configuration |
+| accountId | varchar(255) | NULL | YES | Account identifier |
+| description | longtext | NULL | YES | Description of the API configuration |
+| isPublished | bit(1) | 0 | YES | Indicates if API configuration is published |
+| isDrafted | bit(1) | 0 | YES | Indicates if API configuration is in draft state |
+| data | longtext | NULL | YES | API configuration payload (JSON or structured data) |
+| isTested | bit(1) | 0 | YES | Indicates if API configuration has been tested |
+| type | varchar(100) | LIVECHAT | YES | API type (e.g., LIVECHAT, BOT, etc.) |
+
+---
+
+## Time Format Notes
+
+Timestamp fields (`created`, `updated`) are stored in **epoch format (milliseconds)**.
+
+---
+
+## Functional Coverage
+
+- API Configuration Management
+- Draft & Publish Lifecycle Control
+- Testing Status Tracking
+- Account-level API Segmentation
+- Live Chat / Bot API Integration Settings
+- Metadata & Version Tracking
+
+---
+
+## Related Modules
+
+- Live Chat Integration
+- Bot Integration
+- External API Connectivity
+- Account Configuration Management
+
+---
+
+### Total API Count for a Specific Account
+```sql
+SELECT 
+    accountId,
+    COUNT(*) AS api_count
+FROM vbapisettings
+WHERE accountId = 'YOUR_ACCOUNT_ID'
+GROUP BY accountId;
+```
+
+### Only Published APIs Count
+```sql
+SELECT 
+    accountId,
+    COUNT(*) AS published_api_count
+FROM vbapisettings
+WHERE accountId = 'YOUR_ACCOUNT_ID'
+  AND isPublished = 1
+GROUP BY accountId;
+```
+
+### Only Draft APIs Count
+```sql
+SELECT 
+    accountId,
+    COUNT(*) AS draft_api_count
+FROM vbapisettings
+WHERE accountId = 'YOUR_ACCOUNT_ID'
+  AND isDrafted = 1
+GROUP BY accountId;
+```
