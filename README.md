@@ -437,6 +437,60 @@ All timestamp-related fields (`timestamp`, `startTime`, `endTime`) are stored in
 
 ---
 
+# vbsingle_message_bot Table Documentation
+
+## Table Overview
+
+The `vbsingle_message_bot` table stores individual bot message records exchanged during bot conversations.  
+It captures message content, metadata, delivery status, and visitor linkage.
+
+This table is primarily used for bot-level message tracking and analytics.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Default | Nullable | Description |
+|-------------|------------|----------|------------|-------------|
+| id | bigint(20) | AUTO_INCREMENT | NO | Primary key |
+| created | bigint(20) | NULL | YES | Message creation timestamp (epoch ms) |
+| updated | bigint(20) | NULL | YES | Last update timestamp (epoch ms) |
+| botId | bigint(20) | NULL | YES | Bot identifier |
+| botChatId | bigint(20) | NULL | YES | Bot conversation/chat ID reference |
+| msg | mediumtext | NULL | YES | Bot message content |
+| visitorId | bigint(20) | NULL | YES | Visitor identifier |
+| messageId | varchar(190) | NULL | YES | External or unique message identifier |
+| deliveryStatus | varchar(20) | NULL | YES | Delivery status (sent, delivered, read, failed, etc.) |
+
+---
+
+## Time Format Notes
+
+Timestamp fields (`created`, `updated`) are stored in **epoch format (milliseconds)**.
+
+---
+
+## Functional Coverage
+
+- Bot Message Storage
+- Visitor-Bot Interaction Tracking
+- Message Delivery Monitoring
+- Conversation-level Message Linking
+- Bot Analytics Support
+
+---
+
+## Related Tables
+
+- `bot_conversations` → Aggregated conversation data
+- `vbbotinfo` → Bot configuration details
+- `channellistentity` → Channel mapping (if applicable)
+
+---
+
+
+
+
 ### Account-wise Bot Conversation Count
 ```sql
 SELECT 
