@@ -284,13 +284,6 @@ It contains message metadata, delivery status, timestamps, and message content.
 
 All timestamp columns (`created`, `updated`) are stored in **epoch format (milliseconds)**.
 
-Example conversion in MySQL:
-
-```sql
-SELECT FROM_UNIXTIME(created / 1000)
-FROM vbsingle_message;
-```
-
 ---
 
 ## Functional Coverage
