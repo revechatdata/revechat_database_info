@@ -952,3 +952,159 @@ Applicable fields:
 - monthly_reset
 - is_coupon_applicable
 - trackable
+
+# nb_billing_duration Table Documentation
+
+## Overview
+The `nb_billing_duration` table defines available subscription billing durations in the system.  
+It supports trial periods, monthly plans, and yearly plans with optional discounts.
+
+Each record represents a billing cycle configuration used in pricing or package definitions.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | int(11) | No | Auto Increment | Primary key. Unique identifier for billing duration. |
+| duration_type | enum('trial','monthly','yearly') | No | — | Type of billing duration. |
+| count | int(11) | No | 1 | Number of duration units (e.g., 3 months, 2 years). |
+| discount_percentage | decimal(5,2) | No | 0.00 | Discount applied for this billing duration. |
+| created | bigint(20) | No | — | Creation timestamp (Unix epoch in milliseconds). |
+| updated | bigint(20) | No | — | Last update timestamp (Unix epoch in milliseconds). |
+
+# nb_package Table Documentation
+
+## Overview
+The `nb_package` table stores subscription or product package definitions in the system.
+
+Each record represents a unique package that can be assigned features, pricing, and billing durations.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | int(11) | No | Auto Increment | Primary key. Unique identifier for each package. |
+| package_name | varchar(100) | No | — | Human-readable name of the package. |
+| code | varchar(20) | No | — | Unique system code for referencing the package programmatically. |
+| created | bigint(20) | No | — | Creation timestamp (Unix epoch in milliseconds). |
+| updated | bigint(20) | No | — | Last update timestamp (Unix epoch in milliseconds). |
+
+
+
+# nb_currency Table Documentation
+
+## Overview
+The `nb_currency` table stores supported currency definitions used for pricing, billing, and payment processing in the system.
+
+Each record represents a currency with its code and display symbol.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | int(11) | No | Auto Increment | Primary key. Unique identifier for each currency. |
+| name | varchar(50) | No | — | Full name of the currency (e.g., US Dollar). |
+| code | varchar(3) | No | — | Standard 3-letter currency code (ISO format). |
+| symbol | varchar(5) | No | — | Currency symbol used for display (e.g., $, ৳). |
+| created | bigint(20) | No | — | Creation timestamp (Unix epoch in milliseconds). |
+| updated | bigint(20) | No | — | Last update timestamp (Unix epoch in milliseconds). |
+
+
+# nb_region Table Documentation
+
+## Overview
+The `nb_region` table stores geographic or business regions used for pricing, currency mapping, taxation, or package availability.
+
+Each record represents a uniquely identifiable region within the system.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | int(11) | No | Auto Increment | Primary key. Unique identifier for each region. |
+| region_name | varchar(100) | No | — | Human-readable name of the region. |
+| code | varchar(10) | No | — | Unique system code representing the region. |
+| created | bigint(20) | No | — | Creation timestamp (Unix epoch in milliseconds). |
+| updated | bigint(20) | No | — | Last update timestamp (Unix epoch in milliseconds). |
+
+
+# nb_package_base_price Table Documentation
+
+## Overview
+The `nb_package_base_price` table stores base pricing configurations for packages.
+
+It defines the price of a package based on:
+- Region
+- Currency
+- Billing duration
+
+This table enables localized pricing strategies for subscription packages.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | int(11) | No | Auto Increment | Primary key. Unique identifier for the pricing record. |
+| package_id | int(11) | No | — | Reference to the package being priced. |
+| region_id | int(11) | No | — | Reference to the applicable region. |
+| price | double | No | — | Base price of the package. |
+| currency_id | int(11) | No | — | Reference to the currency used for pricing. |
+| billing_duration_id | int(11) | No | — | Reference to the billing duration. |
+| created | bigint(20) | No | — | Creation timestamp (Unix epoch in milliseconds). |
+| updated | bigint(20) | No | — | Last update timestamp (Unix epoch in milliseconds). |
+
+
+# nb_feature_unit_price Table Documentation
+
+## Overview
+The `nb_feature_unit_price` table stores unit-level pricing for individual features.
+
+It allows feature pricing to vary based on:
+- Package
+- Region
+- Currency
+
+This table is primarily used for add-ons, usage-based features, or trackable feature billing.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | int(11) | No | Auto Increment | Primary key. Unique identifier for each feature price record. |
+| package_id | int(11) | No | — | Reference to the package where the feature is available. |
+| region_id | int(11) | No | — | Reference to the applicable region. |
+| feature_id | int(11) | No | — | Reference to the feature being priced. |
+| price | decimal(10,2) | No | — | Unit price of the feature. |
+| currency_id | int(11) | No | — | Currency used for pricing. |
+| created | bigint(20) | No | — | Creation timestamp (Unix epoch in milliseconds). |
+| updated | bigint(20) | No | — | Last update timestamp (Unix epoch in milliseconds). |
+
+---
+
+## Relationships
+
+| Column | References | Description |
+|-------|-----------|-------------|
+| package_id | nb_package.id | Associated package |
+| region_id | nb_region.id | Applicable region |
+| feature_id | nb_feature.id | Feature being priced |
+| currency_id | nb_currency.id | Pricing currency |
+
+---
+
+## Pricing Logic
+- Each feature can have different prices depending on region.
+- Pricing is defined at the package + feature + region level.
+- Supports usage-based billing and add-on feature monetization.
