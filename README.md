@@ -1164,3 +1164,62 @@ This table is central to package configuration and feature entitlement logic.
 | is_included | 1 | Included in base package price |
 | is_included | 0 | Optional or add-on feature |
 
+
+
+# nb_cart Table Documentation
+
+## Overview
+The `nb_cart` table stores shopping cart information for users.  
+
+Each record represents a cart containing selected packages, features, add-ons, prices, and discounts. The `items` column stores all the details in JSON format.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | bigint(20) | No | Auto Increment | Primary key. Unique identifier for the cart. |
+| account_id | varchar(100) | Yes | NULL | Optional account identifier for the user. |
+| user_id | bigint(20) | No | — | Identifier of the user who owns the cart. |
+| items | text | Yes | NULL | JSON storing all cart items, features, pricing, discounts, and add-ons. |
+| status | varchar(20) | Yes | NULL | Current cart status (e.g., `active`, `completed`, `abandoned`). |
+| created | bigint(20) | Yes | NULL | Cart creation timestamp (Unix epoch in milliseconds). |
+| updated | bigint(20) | Yes | NULL | Last update timestamp (Unix epoch in milliseconds). |
+
+---
+
+## items Column JSON Structure
+
+The `items` column stores the entire cart contents in a JSON format.  
+
+### Sample JSON
+
+```json
+{
+  "couponId": null,
+  "couponDto": null,
+  "billingDurationId": 1,
+  "packageId": 3,
+  "regionId": 1,
+  "currencyId": 1,
+  "features": [
+    {"featureId": 126, "quantity": 3, "price": 0.0, "priceAfterDiscount": 0.0, "subscriptionPrice": 0.0, "subscriptionPriceAfterDiscount": 0.0},
+    {"featureId": 128, "quantity": 4005, "price": 0.2, "priceAfterDiscount": 0.2, "subscriptionPrice": 0.2, "subscriptionPriceAfterDiscount": 0.2}
+  ],
+  "addonsFeatures": [
+    {"featureId": 11, "quantity": 1, "price": 8.0, "priceAfterDiscount": 8.0, "subscriptionPrice": 8.0, "subscriptionPriceAfterDiscount": 8.0}
+  ],
+  "subtotal": 68.19,
+  "subtotalForSubscriptionCycle": 68.19,
+  "discountApplicableFeatureTotalPrices": null,
+  "discountApplicableFeatureTotalPricesForSubscription": null,
+  "fixedFeaturePrices": 0.0,
+  "packagePrice": 60.19,
+  "totalDiscount": 0.0,
+  "totalDiscountDiscountForSubscriptionCycle": 0.0,
+  "walletBalance": 0.0,
+  "payableAmount": 68.19,
+  "calculatedPackageBasePrice": 59.99
+}
+```
