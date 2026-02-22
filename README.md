@@ -1108,3 +1108,59 @@ This table is primarily used for add-ons, usage-based features, or trackable fea
 - Each feature can have different prices depending on region.
 - Pricing is defined at the package + feature + region level.
 - Supports usage-based billing and add-on feature monetization.
+
+# nb_package_wise_capability Table Documentation
+
+## Overview
+The `nb_package_wise_capability` table defines feature availability and usage limits for each package.
+
+It controls:
+- Whether a feature is enabled for a package
+- Whether the feature is included or optional
+- Minimum and maximum usage limits
+
+This table is central to package configuration and feature entitlement logic.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | int(11) | No | 0 | Unique identifier for the capability record. |
+| package_id | int(11) | No | — | Reference to the package. |
+| feature_id | int(11) | No | — | Reference to the feature. |
+| minimum_cap | int(11) | No | 0 | Minimum allowed usage or allocation. |
+| max_cap | int(11) | No | -1 | Maximum allowed usage or allocation (-1 indicates unlimited). |
+| is_enabled | tinyint(1) | No | 1 | Indicates whether the feature is enabled for the package. |
+| is_included | tinyint(1) | No | 0 | Indicates whether the feature is included by default in the package. |
+| created | bigint(20) | No | — | Creation timestamp (Unix epoch in milliseconds). |
+| updated | bigint(20) | No | — | Last update timestamp (Unix epoch in milliseconds). |
+
+---
+
+## Relationships
+
+| Column | References | Description |
+|-------|-----------|-------------|
+| package_id | nb_package.id | Associated package |
+| feature_id | nb_feature.id | Associated feature |
+
+---
+
+## Capability Logic
+
+### Usage Limits
+| Value | Meaning |
+|------|--------|
+| max_cap = -1 | Unlimited usage |
+| minimum_cap = 0 | No guaranteed allocation |
+
+### Feature Availability
+| Field | Value | Meaning |
+|------|------|--------|
+| is_enabled | 1 | Feature is available in package |
+| is_enabled | 0 | Feature is disabled |
+| is_included | 1 | Included in base package price |
+| is_included | 0 | Optional or add-on feature |
+
