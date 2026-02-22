@@ -905,3 +905,50 @@ AND DATEDIFF(
         DATE(FROM_UNIXTIME(bs2.start_date / 1000))
 ) NOT IN (13, 14);
 ```
+
+
+# nb_feature Table Documentation
+
+## Overview
+The `nb_feature` table stores feature definitions used in the system’s package or subscription configuration.  
+Each record represents a feature that can be assigned to a package, optionally tracked, reset monthly, or configured as an add-on.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | int(11) | No | Auto Increment | Primary key. Unique identifier for each feature. |
+| feature_name | varchar(100) | No | — | Human-readable name of the feature. |
+| feature_type | enum('fixed','recurring') | No | — | Defines whether the feature is fixed or recurring. |
+| code | varchar(50) | No | — | Unique system code for referencing the feature programmatically. |
+| is_addon | tinyint(1) | No | 0 | Indicates whether the feature is an add-on (1 = Yes, 0 = No). |
+| monthly_reset | tinyint(1) | No | 0 | Determines if the feature usage resets monthly (1 = Yes, 0 = No). |
+| is_coupon_applicable | tinyint(1) | No | 1 | Specifies if coupons can be applied to this feature (1 = Yes, 0 = No). |
+| created | bigint(20) | No | — | Creation timestamp (Unix epoch in milliseconds). |
+| updated | bigint(20) | No | — | Last update timestamp (Unix epoch in milliseconds). |
+| trackable | tinyint(1) | Yes | 0 | Indicates whether feature usage is tracked (1 = Yes, 0 = No). |
+
+---
+
+## Field Details
+
+### feature_type
+Defines the behavior of the feature:
+- `fixed` → One-time or non-recurring feature
+- `recurring` → Feature usage renews periodically (e.g., monthly)
+
+### Boolean Flags
+The following fields use boolean logic:
+
+| Value | Meaning |
+|------|--------|
+| 1 | Enabled / True |
+| 0 | Disabled / False |
+
+Applicable fields:
+- is_addon
+- monthly_reset
+- is_coupon_applicable
+- trackable
