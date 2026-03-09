@@ -1256,4 +1256,81 @@ It keeps information such as the store URL, access tokens, Shopify account detai
 ---
 
 
+# canned_response Table Documentation
 
+## Overview
+The `canned_response` table stores predefined responses (also known as canned messages) used by support agents during customer conversations.
+
+These responses help agents quickly reply to common customer queries, improving response time and ensuring consistent communication. Each canned response can optionally belong to a department or category and may include attachments or HTML formatted content.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each canned response. |
+| account_id | varchar(255) | Yes | NULL | Identifier of the account to which the canned response belongs. |
+| canned_key | varchar(255) | Yes | NULL | Shortcut key or label used to quickly search or trigger the canned response. |
+| canned_message | text | Yes | NULL | Plain text version of the canned response message. |
+| department_id | bigint(20) | Yes | NULL | Identifier of the department associated with the canned response. |
+| cannedMessageCategoryId | bigint(20) | No | -1 | Category identifier used to group similar canned responses. |
+| attachments | mediumtext | Yes | NULL | Stores attachment metadata (such as files or media) associated with the canned response. |
+| canned_message_html | text | Yes | NULL | HTML formatted version of the canned response message used for rich text responses. |
+
+---
+
+# trigger_instances Table Documentation
+
+## Overview
+The `trigger_instances` table stores configuration details for automated triggers used in the chat or engagement system.
+
+Triggers are used to automatically send messages or display banners to visitors based on predefined conditions such as visitor behavior, time spent on a page, agent availability, or widget language. Each trigger belongs to an account and can be prioritized, activated, or configured with additional UI elements like banners and sub-headers.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each trigger instance. |
+| name | varchar(200) | No | — | Name of the trigger used for internal identification. |
+| message | varchar(500) | Yes | NULL | Message that will be sent or displayed when the trigger fires. |
+| account_id | varchar(20) | No | — | Identifier of the account that owns the trigger. |
+| active | tinyint(1) | No | — | Indicates whether the trigger is active (`1`) or inactive (`0`). |
+| priority | int(11) | No | — | Determines the execution priority of the trigger when multiple triggers match conditions. |
+| unique_visitor | tinyint(1) | Yes | 0 | Indicates whether the trigger should fire only once per unique visitor. |
+| attr_widget_lang | varchar(10) | Yes | 'en' | Language attribute of the widget for which the trigger applies. |
+| attr_text_color | varchar(100) | Yes | '#FFFFFF' | Text color used when displaying the trigger message. |
+| agent_status | int(11) | Yes | 2 | Agent availability condition required for the trigger to fire (e.g., online, offline, or any status). |
+| match_all_condition | tinyint(1) | Yes | 0 | Defines whether all conditions must match (`1`) or any condition can match (`0`). |
+| banner_enabled | tinyint(1) | Yes | 0 | Indicates whether a banner should be displayed along with the trigger. |
+| sub_header_enabled | tinyint(1) | Yes | 0 | Indicates whether a sub-header message is enabled for the trigger. |
+| banner_attachments | longtext | Yes | NULL | Stores attachment information related to the trigger banner. |
+| banner_image | varchar(128) | Yes | NULL | Path or filename of the banner image associated with the trigger. |
+| sub_header_message | varchar(128) | Yes | NULL | Additional message displayed as a sub-header when the trigger fires. |
+| time_to_trigger | int(11) | Yes | 0 | Delay time (usually in seconds) before the trigger is activated after conditions are met. |
+| visitor_closed_trigger_firing_strategy | varchar(20) | Yes | 'INTERVAL' | Strategy used to determine when a trigger should fire again after a visitor closes it. |
+| visitor_closed_trigger_firing_delay | int(11) | Yes | 43200 | Delay time before the trigger can fire again after being closed by the visitor (in seconds). |
+
+---
+# trigger_condition_values Table Documentation
+
+## Overview
+The `trigger_condition_values` table stores condition values associated with triggers.  
+These conditions define the rules that must be satisfied for a trigger to fire.
+
+Each record represents a specific condition linked to a trigger instance. The table typically works together with the `trigger_instances` table, allowing triggers to be executed based on various visitor attributes, behaviors, or system-defined rules.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | int(11) | No | Auto Increment | Primary key. Unique identifier for each trigger condition value record. |
+| type_id | int(11) | No | — | Identifier representing the type of condition (e.g., URL match, visitor attribute, time on page, etc.). |
+| field_values | mediumtext | Yes | NULL | Stores the value(s) associated with the condition. Often stored as serialized data or JSON containing multiple condition parameters. |
+| trigger_id | int(11) | No | — | Identifier of the trigger instance this condition belongs to. |
+
+---
