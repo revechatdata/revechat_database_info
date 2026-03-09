@@ -1334,3 +1334,165 @@ Each record represents a specific condition linked to a trigger instance. The ta
 | trigger_id | int(11) | No | — | Identifier of the trigger instance this condition belongs to. |
 
 ---
+
+
+# ticketinfoentity Table Documentation
+
+## Overview
+The `ticketinfoentity` table stores ticket-related information used in the customer support or helpdesk system.
+
+Each record represents a ticket created within the system and contains references to identifiers used across different systems (such as relational databases and MongoDB). The table also stores metadata like creator, visitor, timestamps, and a serialized or JSON representation of the ticket data.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each ticket record. |
+| accountId | varchar(20) | Yes | NULL | Identifier of the account associated with the ticket. |
+| ticketMongoId | varchar(150) | Yes | NULL | Identifier of the ticket stored in MongoDB. |
+| ticketId | varchar(100) | Yes | NULL | Human-readable or system-generated ticket ID used within the platform. |
+| ticketUUID | varchar(150) | Yes | NULL | Universally unique identifier (UUID) for the ticket. |
+| creatorId | bigint(20) | Yes | NULL | Identifier of the user or agent who created the ticket. |
+| visitorId | bigint(20) | Yes | NULL | Identifier of the visitor or customer associated with the ticket. |
+| created | bigint(20) | Yes | NULL | Timestamp representing when the ticket was created (typically Unix epoch). |
+| updated | bigint(20) | Yes | NULL | Timestamp representing the last update to the ticket (typically Unix epoch). |
+| ticketStr | longtext | Yes | NULL | Serialized or JSON representation of the full ticket data including details, messages, and metadata. |
+
+---
+
+# ticketconversationentity Table Documentation
+
+## Overview
+The `ticketconversationentity` table stores conversation messages associated with support tickets.
+
+Each record represents a single message exchanged within a ticket thread. Messages may be sent by agents, customers, or the system and include metadata such as sender information, message type, visibility level, and email delivery status. This table allows the system to maintain the full conversation history for every support ticket.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each ticket conversation message. |
+| created | bigint(20) | Yes | NULL | Timestamp indicating when the message was created (typically Unix epoch). |
+| updated | bigint(20) | Yes | NULL | Timestamp indicating the last update to the message (typically Unix epoch). |
+| mailSendingStatus | varchar(255) | Yes | NULL | Status of the email notification related to the message (e.g., sent, failed, pending). |
+| message | longtext | Yes | NULL | The content of the message exchanged within the ticket conversation. |
+| messageSender | varchar(255) | Yes | NULL | Identifier or role of the message sender (e.g., agent, visitor, system). |
+| messageType | varchar(255) | Yes | NULL | Type of message such as comment, reply, note, or system-generated message. |
+| messageVisibility | varchar(255) | Yes | NULL | Visibility level of the message (e.g., public to customer or internal note for agents). |
+| ticketId | varchar(150) | Yes | NULL | Identifier of the ticket associated with this conversation message. |
+| userId | bigint(20) | Yes | NULL | Identifier of the user or agent who sent the message. |
+| messageId | varchar(150) | Yes | NULL | Unique identifier for the message within the conversation thread. |
+| inReplyTo | varchar(150) | Yes | NULL | References the message ID that this message is replying to. |
+
+---
+# ticketentity Table Documentation
+
+## Overview
+The `ticketentity` table stores the primary information related to support tickets within the helpdesk system.
+
+Each record represents a support ticket created by a visitor, agent, or system. The table maintains ticket metadata such as subject, description, status, priority, assigned agent, visitor information, timestamps, and associated communication references. It acts as the core table for managing ticket lifecycle and workflow within the support system.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each ticket record. |
+| created | bigint(20) | Yes | NULL | Timestamp representing when the ticket was created (Unix epoch). |
+| updated | bigint(20) | Yes | NULL | Timestamp representing the last update time of the ticket (Unix epoch). |
+| accountId | varchar(50) | Yes | NULL | Identifier of the account associated with the ticket. |
+| chatInfoId | bigint(20) | Yes | NULL | Identifier linking the ticket to a related chat session if created from chat. |
+| description | longtext | Yes | NULL | Detailed description of the issue or request submitted in the ticket. |
+| isDeleted | bit(1) | Yes | NULL | Indicates whether the ticket has been soft-deleted. |
+| subject | varchar(255) | Yes | NULL | Title or subject of the ticket. |
+| assignee_id | bigint(20) | Yes | NULL | Identifier of the agent assigned to handle the ticket. |
+| status_id | bigint(20) | Yes | NULL | Identifier representing the current status of the ticket (e.g., open, pending, closed). |
+| visitor_record_id | bigint(20) | No | — | Identifier of the visitor associated with the ticket. |
+| isSpammed | bit(1) | Yes | NULL | Indicates whether the ticket has been marked as spam. |
+| attachments | mediumtext | Yes | NULL | Stores metadata or references for files attached to the ticket. |
+| confirmationEmailStatus | varchar(255) | No | — | Status indicating whether a confirmation email has been sent for the ticket. |
+| hasNewMsg | bit(1) | Yes | NULL | Indicates whether there are new unread messages in the ticket. |
+| creator_id | bigint(20) | Yes | NULL | Identifier of the user or system entity that created the ticket. |
+| creationSource | varchar(255) | No | — | Source from which the ticket was created (e.g., email, chat, form). |
+| ticketId | varchar(50) | No | — | Unique ticket identifier used within the system for referencing tickets. |
+| mailMsgId | varchar(150) | Yes | NULL | Identifier of the email message associated with the ticket creation or update. |
+| isAggregated | tinyint(1) | Yes | 0 | Indicates whether the ticket has been aggregated with other related tickets. |
+| dueDate | bigint(20) | Yes | NULL | Timestamp indicating the due date for resolving the ticket. |
+| isOverDue | tinyint(1) | Yes | 0 | Indicates whether the ticket has passed its due date. |
+| priority_id | bigint(20) | Yes | NULL | Identifier representing the priority level of the ticket. |
+| formId | bigint(20) | Yes | NULL | Identifier of the form used to create the ticket. |
+| ticketUUID | varchar(150) | Yes | NULL | Universally unique identifier (UUID) for the ticket. |
+| statusGroupId | bigint(20) | Yes | NULL | Identifier representing a grouped category of ticket statuses. |
+| visitorName | varchar(255) | Yes | NULL | Name of the visitor who created or is associated with the ticket. |
+| visitorEmail | varchar(255) | Yes | NULL | Email address of the visitor associated with the ticket. |
+
+---
+
+
+# ticketstatusentity Table Documentation
+
+## Overview
+The `ticketstatusentity` table defines the different statuses that a support ticket can have within the helpdesk system.
+
+Each record represents a ticket status such as *Open*, *Pending*, *Resolved*, or *Closed*. The table also includes configuration details like status category, display color, notification settings, visitor visibility, SMS/email notifications, and grouping information. These statuses help manage the ticket lifecycle and workflow.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each ticket status. |
+| created | bigint(20) | Yes | NULL | Timestamp indicating when the status record was created (Unix epoch). |
+| updated | bigint(20) | Yes | NULL | Timestamp indicating the last update to the status record. |
+| accountId | varchar(255) | Yes | NULL | Identifier of the account that owns this status configuration. |
+| description | varchar(255) | Yes | NULL | Description of the ticket status. |
+| statusName | varchar(255) | Yes | NULL | Internal name of the ticket status (e.g., Open, Closed, Pending). |
+| cssClassName | varchar(255) | Yes | NULL | CSS class used for styling the status in the user interface. |
+| colorCode | varchar(255) | Yes | NULL | Color code associated with the status for UI display purposes. |
+| category | varchar(100) | Yes | NULL | Category that groups similar statuses together. |
+| type | varchar(100) | Yes | NULL | Type classification of the ticket status. |
+| visitorStatusName | varchar(100) | Yes | NULL | Status label displayed to visitors or customers. |
+| showVisitor | tinyint(1) | Yes | 1 | Indicates whether the status is visible to visitors (`1`) or internal only (`0`). |
+| notify | tinyint(1) | Yes | 0 | Indicates whether notifications should be sent when this status is applied. |
+| notifyTo | varchar(255) | Yes | 'VISITOR' | Specifies the target of notifications (e.g., visitor, agent). |
+| template_id | bigint(20) | Yes | NULL | Identifier of the email template associated with the status notification. |
+| groupId | bigint(20) | Yes | NULL | Identifier referencing the ticket status group. |
+| isDeleted | tinyint(1) | Yes | 0 | Indicates whether the status has been soft-deleted. |
+| sortNo | int(11) | Yes | NULL | Sorting order used to display statuses in the UI. |
+| isDefault | tinyint(1) | Yes | 0 | Indicates whether this status is the default status for new tickets. |
+| notifyBySms | tinyint(1) | Yes | 0 | Indicates whether SMS notifications should be sent when this status is triggered. |
+| fromNumber | varchar(100) | Yes | NULL | Sender phone number used for SMS notifications. |
+| smsTemplateId | varchar(150) | Yes | NULL | Identifier of the SMS template used for status notification. |
+
+---
+# ticketstatusgroup Table Documentation
+
+## Overview
+The `ticketstatusgroup` table stores groups of ticket statuses used within the helpdesk system.
+
+Status groups help organize multiple ticket statuses into logical categories, making it easier to manage workflows, reporting, and UI display. Each group can belong to an account and may be created by a specific user. Groups can also be marked as default or inactive depending on system configuration.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each ticket status group. |
+| accountId | varchar(255) | Yes | NULL | Identifier of the account that owns the status group. |
+| creatorId | bigint(20) | Yes | NULL | Identifier of the user who created the status group. |
+| title | varchar(255) | No | — | Name or title of the ticket status group. |
+| description | text | Yes | NULL | Description explaining the purpose of the status group. |
+| status | tinyint(1) | Yes | 0 | Indicates whether the status group is active (`1`) or inactive (`0`). |
+| isDefault | tinyint(1) | Yes | 0 | Indicates whether this status group is the default group. |
+| created | bigint(20) | Yes | NULL | Timestamp representing when the status group was created (Unix epoch). |
+| updated | bigint(20) | Yes | NULL | Timestamp representing the last update time of the status group. |
+| isDeleted | tinyint(1) | Yes | 0 | Indicates whether the status group has been soft-deleted. |
+
+---
