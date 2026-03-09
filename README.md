@@ -379,6 +379,42 @@ FROM vbbotinfo;
 
 ---
 
+# intent Table Documentation
+
+## Overview
+The `intent` table stores chatbot intent definitions used in conversational automation.
+
+Each record represents an intent within a chatbot flow. An intent typically contains a name, response message, and metadata related to the bot configuration. Intents are used to define how the chatbot responds to user inputs and are often connected within visual bot flows. The table also stores UI layout information used in the chatbot flow builder (such as node position and size).
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| ID | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each intent record. |
+| intent_id | varchar(40) | Yes | NULL | Unique identifier for the intent used internally within the chatbot system. |
+| name | varchar(200) | Yes | NULL | Name of the intent used for identification in the chatbot flow. |
+| response | mediumtext | Yes | NULL | Default response message associated with the intent. |
+| account_id | varchar(20) | Yes | NULL | Identifier of the account that owns the intent. |
+| bot_id | bigint(20) | Yes | NULL | Identifier of the chatbot associated with the intent. |
+| type | varchar(50) | Yes | NULL | Type of intent node (e.g., message, condition, action, etc.). |
+| created_time | bigint(20) | Yes | NULL | Timestamp indicating when the intent was initially created (Unix epoch). |
+| serialNo | int(11) | Yes | NULL | Serial number used to maintain ordering of intents. |
+| is_deleted | tinyint(1) | Yes | 0 | Indicates whether the intent has been soft-deleted. |
+| created | bigint(20) | Yes | NULL | Timestamp representing when the intent record was created. |
+| updated | bigint(20) | Yes | NULL | Timestamp representing the last update to the intent record. |
+| positionx | decimal(10,2) | Yes | NULL | X-coordinate position of the intent node in the chatbot visual flow builder. |
+| positionY | decimal(10,2) | Yes | NULL | Y-coordinate position of the intent node in the chatbot visual flow builder. |
+| width | decimal(10,2) | Yes | NULL | Width of the intent node in the chatbot flow editor UI. |
+| height | decimal(10,2) | Yes | NULL | Height of the intent node in the chatbot flow editor UI. |
+| version | bigint(20) | Yes | 0 | Version number used for tracking changes or updates to the intent. |
+| is_updated | tinyint(1) | Yes | 1 | Indicates whether the intent has been updated since the last version. |
+| note | longtext | Yes | NULL | Additional notes or metadata related to the intent. |
+| flowId | bigint(20) | Yes | NULL | Identifier of the chatbot flow to which the intent belongs. |
+
+---
+
 
 # bot_conversations Table Documentation
 
