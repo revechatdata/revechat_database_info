@@ -1496,3 +1496,106 @@ Status groups help organize multiple ticket statuses into logical categories, ma
 | isDeleted | tinyint(1) | Yes | 0 | Indicates whether the status group has been soft-deleted. |
 
 ---
+
+
+# campaign Table Documentation
+
+## Overview
+The `campaign` table stores information related to marketing or messaging campaigns created within the system.
+
+Each record represents a campaign used to send messages to a targeted audience segment. Campaigns can be associated with templates, contact lists, business accounts, and messaging channels such as WhatsApp or SMS. The table also tracks campaign status, scheduling details, audience size, and message content.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each campaign. |
+| created | bigint(20) | Yes | NULL | Timestamp representing when the campaign was created (Unix epoch). |
+| updated | bigint(20) | Yes | NULL | Timestamp representing the last update time of the campaign. |
+| account_id | varchar(255) | Yes | NULL | Identifier of the account that owns the campaign. |
+| title | varchar(255) | Yes | NULL | Name or title of the campaign. |
+| template_id | varchar(255) | Yes | NULL | Identifier of the template used for the campaign message. |
+| created_by | bigint(20) | Yes | NULL | Identifier of the user who created the campaign. |
+| segment_id | bigint(20) | Yes | NULL | Identifier of the audience segment targeted by the campaign. |
+| status | varchar(255) | No | 'INITIAL' | Current status of the campaign (e.g., INITIAL, SCHEDULED, RUNNING, COMPLETED). |
+| start_time | bigint(20) | Yes | NULL | Scheduled start time of the campaign (Unix epoch). |
+| campaign_type | varchar(255) | No | — | Type of campaign (e.g., broadcast, promotional, transactional). |
+| business_account_id | varchar(255) | Yes | NULL | Identifier of the business account used for sending campaign messages. |
+| message | longtext | Yes | NULL | Message content that will be sent as part of the campaign. |
+| description | longtext | Yes | NULL | Additional description or notes about the campaign. |
+| title_emoji | varchar(255) | Yes | NULL | Emoji associated with the campaign title for UI display. |
+| contact_count | bigint(20) | Yes | NULL | Total number of contacts targeted in the campaign. |
+| phone_number_id | varchar(255) | Yes | NULL | Identifier of the phone number used to send campaign messages. |
+| contact_file_url | longtext | Yes | NULL | URL of the uploaded contact file used for campaign audience targeting. |
+| audience_type | varchar(255) | No | 'UNKNOWN' | Type of audience used for the campaign (e.g., segment, uploaded contacts, unknown). |
+
+---
+
+# vbcontactsegment Table Documentation
+
+## Overview
+The `vbcontactsegment` table stores audience segmentation data used for targeted campaigns and messaging.
+
+Each record represents a contact segment created within the system. Segments allow users to group contacts based on specific criteria such as attributes, behaviors, or custom filters. These segments are commonly used for marketing campaigns, automated messaging, and audience targeting.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each contact segment. |
+| name | varchar(255) | No | — | Name of the contact segment used for identification. |
+| created | bigint(20) | Yes | NULL | Timestamp indicating when the segment was created (Unix epoch). |
+| updated | bigint(20) | Yes | NULL | Timestamp indicating the last update time of the segment. |
+| accountId | varchar(255) | Yes | NULL | Identifier of the account that owns the contact segment. |
+| segmentCriteria | longtext | Yes | NULL | Stores the criteria or filtering rules used to define the segment (often stored as JSON or serialized data). |
+| columnList | longtext | Yes | NULL | List of contact fields or attributes used in the segment definition. |
+| emoji | varchar(10) | Yes | NULL | Emoji associated with the segment for visual identification in the UI. |
+
+---
+
+# contactinfo Table Documentation
+
+## Overview
+The `contactinfo` table stores consolidated contact information for visitors within the system.
+
+Each record represents a contact associated with a specific account and visitor. The table maintains metadata such as communication channel, timestamps, labels, and a set of dynamic attributes.  
+
+All **custom attributes** related to contacts (such as name, email, phone number, company, tags, etc.) are stored inside the `attributes` column, typically in **JSON or serialized format**, allowing flexible storage of additional contact properties.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each contact record. |
+| accountId | varchar(20) | No | — | Identifier of the account that owns the contact. |
+| visitorId | bigint(20) | No | — | Identifier of the visitor associated with the contact. |
+| lastVisitorRecordId | bigint(20) | No | — | Identifier referencing the most recent visitor record associated with this contact. |
+| channelType | int(11) | No | — | Represents the communication channel type (e.g., chat, WhatsApp, email, etc.). |
+| attributes | text | No | — | Stores all custom contact attributes (such as name, email, phone, company, etc.) in JSON or serialized format. |
+| updated | bigint(20) | No | — | Timestamp representing the last update time of the contact record (Unix epoch). |
+| lastContactedTimestamp | bigint(20) | Yes | NULL | Timestamp indicating the last time the contact was interacted with. |
+| createdTimestamp | bigint(20) | Yes | 0 | Timestamp indicating when the contact record was initially created. |
+| isAggregated | tinyint(1) | Yes | 0 | Indicates whether the contact record is aggregated from multiple visitor records. |
+| labels | text | Yes | NULL | Stores labels or tags associated with the contact for categorization and filtering. |
+
+---
+
+
+## Notes
+
+- The **`attributes` column** is the main storage for **custom contact attributes**.
+- Attributes may include fields such as:
+  - Name
+  - Email
+  - Phone
+  - Company
+  - Custom fields created by the account
+- Since attributes are stored dynamically, the structure may vary across accounts depending on configured contact properties.
+
+---
