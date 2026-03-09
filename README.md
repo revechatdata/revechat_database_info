@@ -1832,6 +1832,8 @@ The `copilot_message` table stores individual messages exchanged during **Copilo
 
 Each record represents a message generated or processed within a Copilot-assisted session. Messages are typically associated with an agent and may also be linked to a specific chat or conversation context. This table helps track AI-generated suggestions, prompts, and agent inputs during Copilot usage.
 
+The actual message payload is stored in the **`msg` column in JSON format**, which contains metadata about the request, the AI model used, the query, and conversation identifiers.
+
 ---
 
 ## Table Structure
@@ -1842,20 +1844,67 @@ Each record represents a message generated or processed within a Copilot-assiste
 | accountId | varchar(20) | Yes | NULL | Identifier of the account associated with the Copilot interaction. |
 | agentId | bigint(20) | Yes | NULL | Identifier of the agent involved in the Copilot interaction. |
 | chatId | bigint(20) | Yes | NULL | Identifier of the chat session associated with the Copilot message. |
-| messageId | varchar(190) | Yes | NULL | External or system-generated message identifier used for tracking messages. |
-| msg | mediumtext | Yes | NULL | Content of the Copilot message or AI-generated response. |
+| messageId | varchar(190) | Yes | NULL | Unique identifier for the message used for tracking or correlation. |
+| msg | mediumtext | Yes | NULL | JSON payload containing the Copilot request or message data. |
 | created | bigint(20) | Yes | NULL | Timestamp indicating when the message was created (Unix epoch). |
 | updated | bigint(20) | Yes | NULL | Timestamp indicating the last update time of the message. |
 
 ---
 
+# JSON Structure of `msg`
+
+The `msg` column stores a **JSON object containing the Copilot request metadata and user query**.
+
+## Sample Data
+
+```json
+{
+  "ftype": 0,
+  "ttype": 1,
+  "account": "3319570",
+  "body": {
+    "llm_model": "llama-2-7b-chat",
+    "account_id": "3319570",
+    "question": "tell me about the post paid plans",
+    "user_id": "gold31.rabby@gmail.com",
+    "kb_ids": "493",
+    "bot_id": "9663"
+  },
+  "messageId": "c51c44da-065a-4f54-925f-d14a762c0f85",
+  "agentId": "gold31.rabby@gmail.com",
+  "timestamp": 1754797646429,
+  "chatId": 1
+}
+```
+
+---
+
+## JSON Field Description
+
+| Field | Type | Description |
+|------|------|-------------|
+| ftype | number | Message format type identifier used internally by the system. |
+| ttype | number | Target or message type used by the Copilot messaging system. |
+| account | string | Identifier of the account associated with the request. |
+| body | object | Main request payload containing AI query details. |
+| body.llm_model | string | Name of the large language model used to process the request. |
+| body.account_id | string | Account identifier for the request. |
+| body.question | string | The question or prompt sent to the Copilot AI. |
+| body.user_id | string | Identifier of the user or agent making the request. |
+| body.kb_ids | string | Knowledge base IDs used to retrieve context for answering the query. |
+| body.bot_id | string | Identifier of the chatbot associated with the request. |
+| messageId | string | Unique identifier for the message instance. |
+| agentId | string | Identifier of the agent sending the query to Copilot. |
+| timestamp | number | Timestamp when the message request was created (Unix epoch in milliseconds). |
+| chatId | number | Identifier of the chat session associated with the Copilot request. |
+
+---
+
 ## Notes
 
-- This table stores **individual messages exchanged with Copilot**.
-- Messages may include:
-  - Agent prompts to Copilot
-  - AI-generated suggestions or responses
-  - System-generated Copilot outputs
-- The `chatId` field links Copilot messages to a **specific chat conversation context** when applicable.
+- The `msg` column stores **dynamic AI request data**, which allows flexible integration with different AI models and services.
+- The **`body` object** contains the main AI query parameters.
+- `kb_ids` indicates the **knowledge bases used for retrieval-augmented generation (RAG)** when answering the query.
+- The system may store both **agent prompts and AI-generated responses** in this table.
 
 ---
