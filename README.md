@@ -1635,3 +1635,227 @@ All **custom attributes** related to contacts (such as name, email, phone number
 - Since attributes are stored dynamically, the structure may vary across accounts depending on configured contact properties.
 
 ---
+
+
+# copilot_setting Table Documentation
+
+## Overview
+The `copilot_setting` table stores configuration settings for the **Copilot AI assistant** used across different modules of the platform.
+
+These settings define how Copilot features are enabled and used for:
+- **Access control** (which agents can use Copilot and what knowledge bases are accessible)
+- **Live chat assistance**
+- **Ticket support assistance**
+
+Each configuration is stored as **JSON data** in separate columns to allow flexible feature configuration per account.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each Copilot settings record. |
+| accountId | varchar(50) | No | — | Identifier of the account associated with the Copilot settings. |
+| access_setting | mediumtext | Yes | NULL | JSON configuration defining which agents can access Copilot and what knowledge bases they can use. |
+| livechat_setting | mediumtext | Yes | NULL | JSON configuration defining Copilot features for live chat conversations. |
+| ticket_setting | mediumtext | Yes | NULL | JSON configuration defining Copilot features for ticket conversations. |
+| created | bigint(20) | Yes | NULL | Timestamp indicating when the settings record was created (Unix epoch). |
+| updated | bigint(20) | Yes | NULL | Timestamp indicating the last update time of the settings record. |
+
+---
+
+# JSON Configuration Structure
+
+## 1. Access Setting
+
+Controls **which agents can use Copilot and which knowledge bases are accessible**.
+
+### Sample Data
+```json
+{
+  "isAllAgent": true,
+  "allowedAgentIds": [8565705],
+  "kbAccess": [
+    {
+      "deptId": -1,
+      "kbIds": [717, 823]
+    }
+  ]
+}
+```
+
+### Field Description
+
+| Field | Type | Description |
+|------|------|-------------|
+| isAllAgent | boolean | Indicates whether Copilot is accessible to all agents in the account. |
+| allowedAgentIds | array | List of agent IDs allowed to use Copilot when `isAllAgent` is false. |
+| kbAccess | array | Defines which knowledge bases Copilot can access. |
+| deptId | number | Department ID associated with the knowledge base access. |
+| kbIds | array | List of knowledge base IDs accessible for Copilot responses. |
+
+---
+
+## 2. Live Chat Setting
+
+Controls **AI assistance features during live chat conversations**.
+
+### Sample Data
+```json
+{
+  "chatSummaryAfterChatClose": true,
+  "chatSummaryOnChatTransfer": true,
+  "replySuggestion": true,
+  "translation": true,
+  "smartRewrite": true,
+  "sentiment": {
+    "status": true,
+    "sentimentData": {
+      "disappointed": {"type":"DISAPPOINTED","min":0,"max":25},
+      "neutral": {"type":"NEUTRAL","min":16,"max":50},
+      "good": {"type":"GOOD","min":51,"max":75},
+      "satisfied": {"type":"SATISFIED","min":76,"max":100}
+    }
+  }
+}
+```
+
+### Field Description
+
+| Field | Type | Description |
+|------|------|-------------|
+| chatSummaryAfterChatClose | boolean | Enables automatic chat summary generation after a chat session ends. |
+| chatSummaryOnChatTransfer | boolean | Generates chat summary when the conversation is transferred to another agent. |
+| replySuggestion | boolean | Enables AI-powered reply suggestions for agents. |
+| translation | boolean | Enables automatic message translation for multilingual conversations. |
+| smartRewrite | boolean | Allows agents to rewrite responses using AI assistance. |
+| sentiment.status | boolean | Enables sentiment analysis for chat messages. |
+| sentiment.sentimentData | object | Defines sentiment score ranges used to categorize customer sentiment. |
+
+### Sentiment Categories
+
+| Sentiment | Score Range |
+|----------|-------------|
+| DISAPPOINTED | 0 – 25 |
+| NEUTRAL | 16 – 50 |
+| GOOD | 51 – 75 |
+| SATISFIED | 76 – 100 |
+
+---
+
+## 3. Ticket Setting
+
+Controls **AI assistance features during ticket-based support conversations**.
+
+### Sample Data
+```json
+{
+  "chatSummaryAfterChatClose": true,
+  "chatSummaryOnChatTransfer": true,
+  "replySuggestion": true,
+  "translation": true,
+  "smartRewrite": true,
+  "sentiment": {
+    "status": true,
+    "sentimentData": {
+      "disappointed": {"type":"DISAPPOINTED","min":0,"max":25},
+      "neutral": {"type":"NEUTRAL","min":16,"max":50},
+      "good": {"type":"GOOD","min":51,"max":75},
+      "satisfied": {"type":"SATISFIED","min":76,"max":100}
+    }
+  }
+}
+```
+
+### Features Enabled for Ticketing
+
+- AI **reply suggestions for agents**
+- AI **translation of ticket messages**
+- AI **smart rewrite of responses**
+- **Automatic ticket conversation summaries**
+- **Customer sentiment analysis**
+
+---
+
+## Notes
+
+- JSON structures allow flexible configuration without modifying the database schema.
+- Copilot settings are stored **per account**, enabling customized AI assistance configurations.
+- Sentiment scoring helps agents understand **customer mood and urgency** during conversations.
+
+---
+
+# copilot_conversation Table Documentation
+
+## Overview
+The `copilot_conversation` table stores session-level information for conversations between an **agent and the Copilot AI assistant**.
+
+Each record represents a Copilot interaction session initiated by an agent. The table tracks which agent started the session, which account it belongs to, and the current status of the conversation. These sessions are used to manage the lifecycle of AI-assisted interactions.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| ID | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each Copilot conversation session. |
+| accountId | varchar(20) | Yes | NULL | Identifier of the account associated with the Copilot conversation. |
+| agentId | bigint(20) | No | — | Identifier of the agent who initiated the Copilot conversation. |
+| status | varchar(50) | No | — | Current status of the Copilot conversation session. |
+| created | bigint(20) | Yes | NULL | Timestamp indicating when the conversation session was created (Unix epoch). |
+| updated | bigint(20) | Yes | NULL | Timestamp indicating the last update time of the conversation session. |
+
+---
+
+## Status Values
+
+| Status | Description |
+|------|-------------|
+| RUNNING | The Copilot conversation session is currently active. |
+| ENDED | The Copilot conversation session has been closed or completed. |
+
+---
+
+## Notes
+
+- Each record represents a **single Copilot session for an agent**.
+- A session typically starts when an agent begins interacting with Copilot and ends when the session is closed.
+- Conversation messages related to the session may be stored in a separate table linked to this conversation ID.
+
+---
+
+# copilot_message Table Documentation
+
+## Overview
+The `copilot_message` table stores individual messages exchanged during **Copilot AI interactions**.
+
+Each record represents a message generated or processed within a Copilot-assisted session. Messages are typically associated with an agent and may also be linked to a specific chat or conversation context. This table helps track AI-generated suggestions, prompts, and agent inputs during Copilot usage.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each Copilot message record. |
+| accountId | varchar(20) | Yes | NULL | Identifier of the account associated with the Copilot interaction. |
+| agentId | bigint(20) | Yes | NULL | Identifier of the agent involved in the Copilot interaction. |
+| chatId | bigint(20) | Yes | NULL | Identifier of the chat session associated with the Copilot message. |
+| messageId | varchar(190) | Yes | NULL | External or system-generated message identifier used for tracking messages. |
+| msg | mediumtext | Yes | NULL | Content of the Copilot message or AI-generated response. |
+| created | bigint(20) | Yes | NULL | Timestamp indicating when the message was created (Unix epoch). |
+| updated | bigint(20) | Yes | NULL | Timestamp indicating the last update time of the message. |
+
+---
+
+## Notes
+
+- This table stores **individual messages exchanged with Copilot**.
+- Messages may include:
+  - Agent prompts to Copilot
+  - AI-generated suggestions or responses
+  - System-generated Copilot outputs
+- The `chatId` field links Copilot messages to a **specific chat conversation context** when applicable.
+
+---
