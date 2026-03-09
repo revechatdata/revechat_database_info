@@ -1223,3 +1223,37 @@ The `items` column stores the entire cart contents in a JSON format.
   "calculatedPackageBasePrice": 59.99
 }
 ```
+
+# access_info Table Documentation
+
+## Overview
+The `access_info` table stores authentication and installation details for Shopify stores that have installed the application.
+
+It keeps information such as the store URL, access tokens, Shopify account details, subscription status, and installation/uninstallation timestamps. This table is mainly used to manage store authentication, track app installations, and monitor subscription status.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| id | int(11) | No | Auto Increment | Primary key. Unique identifier for each store record. |
+| store_url | varchar(255) | No | — | Shopify store URL where the app is installed. |
+| access_token | varchar(255) | No | — | Shopify API access token used for authenticated API calls. |
+| install_date | varchar(255) | Yes | NULL | Date when the application was installed on the Shopify store. |
+| hmac | varchar(255) | No | — | HMAC hash used to verify Shopify request authenticity. |
+| access_code | varchar(255) | No | — | Authorization code received from Shopify during OAuth process. |
+| shopify_username | varchar(255) | Yes | NULL | Name of the Shopify store owner or account user. |
+| shopify_email | varchar(255) | Yes | NULL | Email address associated with the Shopify store account. |
+| phone | varchar(50) | Yes | NULL | Contact phone number of the Shopify account user. |
+| password | varchar(100) | Yes | NULL | Password associated with the account (if used for internal authentication). |
+| subscription_id | varchar(100) | Yes | NULL | Identifier of the subscription associated with the store. |
+| subscription_status | enum('active','inactive') | Yes | 'inactive' | Indicates whether the store's subscription is currently active or inactive. |
+| uninstall_date | datetime | Yes | NULL | Date and time when the app was uninstalled from the Shopify store. |
+| account_id | varchar(150) | Yes | NULL | Internal account identifier associated with the store. |
+| widget_id | varchar(200) | Yes | NULL | Identifier for the widget linked with the store installation. |
+
+---
+
+
+
