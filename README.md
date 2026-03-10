@@ -1908,3 +1908,78 @@ The `msg` column stores a **JSON object containing the Copilot request metadata 
 - The system may store both **agent prompts and AI-generated responses** in this table.
 
 ---
+
+# widgetattribute Table Documentation
+
+## Overview
+The `widgetattribute` table stores configuration settings and UI customization options for the **live chat widget** used on websites.
+
+Each record represents a widget configuration associated with a specific account. The table controls the widget’s appearance, behavior, forms, surveys, banners, social icons, office hours, and other customization settings used in the chat interface.
+
+Many fields store **JSON or serialized configuration data**, allowing flexible customization of widget behavior without requiring schema changes.
+
+---
+
+## Table Structure
+
+| Column Name | Data Type | Nullable | Default | Description |
+|------------|-----------|----------|---------|-------------|
+| ID | bigint(20) | No | Auto Increment | Primary key. Unique identifier for each widget configuration. |
+| account_id | varchar(20) | Yes | NULL | Identifier of the account associated with the widget configuration. |
+| attr_invitation_banner_online | text | Yes | NULL | Configuration for the invitation banner shown when agents are online. |
+| attr_invitation_banner_offline | text | Yes | NULL | Configuration for the invitation banner shown when agents are offline. |
+| attr_chat_window | text | Yes | NULL | Settings related to the chat window interface. |
+| attr_post_survey_form | mediumtext | Yes | NULL | Configuration for the post-chat survey form displayed after conversations end. |
+| attr_theme_color | varchar(20) | Yes | '#0058BF' | Primary theme color used in the chat widget UI. |
+| attr_greetings_form | varchar(2048) | No | Default JSON | Configuration for the greeting form displayed when the widget is opened. |
+| attr_social_icon_twitter | char(1) | Yes | '1' | Indicates whether the Twitter social icon is enabled in the widget. |
+| attr_social_icon_facebook | char(1) | Yes | '1' | Indicates whether the Facebook social icon is enabled in the widget. |
+| attr_banner_position | char(1) | Yes | '2' | Position of the widget banner on the webpage. |
+| attr_window_size | char(1) | Yes | '2' | Defines the size of the chat window. |
+| attr_eyecatcher_image_gallery | varchar(50) | Yes | NULL | Identifier of the eyecatcher image used for the widget launcher. |
+| general_settings | varchar(1024) | Yes | NULL | General configuration settings for the widget. |
+| urlId | varchar(100) | No | '-1' | Identifier associated with a specific website or URL configuration. |
+| attr_theme_name | varchar(100) | Yes | 'modern-theme' | Name of the UI theme used for the widget. |
+| mobile_trigger | varchar(8) | Yes | NULL | Defines how the widget trigger behaves on mobile devices. |
+| attr_record_info | varchar(255) | Yes | NULL | Stores metadata related to widget records or configuration. |
+| attr_office_hours | longtext | Yes | NULL | Configuration defining office hours and agent availability. |
+| attr_widget_lang | varchar(10) | Yes | 'en' | Default language used by the widget interface. |
+| attr_text_color | varchar(100) | Yes | '#FFFFFF' | Text color used in widget UI elements. |
+| is_white_label | tinyint(4) | Yes | 0 | Indicates whether white-label branding is enabled. |
+| chat_button_shape | varchar(100) | Yes | 'circle' | Shape of the chat launch button (e.g., circle, square). |
+| attr_launching_window_offline | mediumtext | Yes | NULL | Configuration for the widget launching window when agents are offline. |
+| attr_launching_window_online | mediumtext | Yes | NULL | Configuration for the widget launching window when agents are online. |
+| attr_missed_chat | mediumtext | Yes | NULL | Settings related to missed chat notifications. |
+| attr_queued_offline | mediumtext | Yes | NULL | Configuration for queued chats when agents are offline. |
+| attr_widget_home | text | Yes | NULL | Configuration for the widget home interface. |
+| widgetuuid | varchar(50) | Yes | 'default' | Unique identifier for the widget instance. |
+| attr_forms | text | Yes | NULL | Configuration data for forms used within the widget. |
+| web_push_settings | text | Yes | NULL | Settings related to web push notifications for the widget. |
+
+---
+
+## Indexes
+
+| Index Name | Columns | Type | Description |
+|-----------|--------|------|-------------|
+| PRIMARY | (ID) | BTREE | Primary key ensuring unique identification of each widget configuration. |
+| account_id | (account_id) | BTREE | Optimizes queries retrieving widget configurations by account. |
+
+---
+
+## Notes
+
+- Many configuration fields store **JSON or serialized UI settings**.
+- The table centralizes **all widget customization and behavior settings**.
+- Supports configuration for:
+  - Widget UI themes
+  - Greeting forms
+  - Chat invitation banners
+  - Post-chat surveys
+  - Social media icons
+  - Office hours and availability
+  - Mobile widget behavior
+  - Push notification settings
+- Each account can have **multiple widget configurations** depending on different websites or widget instances.
+
+---
