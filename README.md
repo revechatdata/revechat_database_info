@@ -1983,3 +1983,63 @@ Many fields store **JSON or serialized configuration data**, allowing flexible c
 - Each account can have **multiple widget configurations** depending on different websites or widget instances.
 
 ---
+
+
+# vbsession Table Documentation
+
+## Overview
+The `vbsession` table stores **agent session activity records** for an account.  
+Each record represents a **login session of a user (typically an agent)** within the system.
+
+The table tracks **when a user starts and ends a session**, the **account they belong to**, and any **reason associated with the session event** (such as logout reason, disconnection, etc.).
+
+This table is commonly used for:
+
+- Agent availability tracking
+- Session duration analysis
+- Workforce activity monitoring
+- Operational reporting
+
+---
+
+## Table Information
+
+| Property | Value |
+|--------|------|
+| Engine | InnoDB |
+| Charset | utf8mb4 |
+| Collation | utf8mb4_unicode_ci |
+| Primary Key | `ID` |
+| Auto Increment | Yes |
+
+---
+
+## Column Definitions
+
+| Column | Type | Nullable | Description |
+|------|------|------|-------------|
+| `ID` | bigint(20) | No | Unique identifier for each session record |
+| `userID` | bigint(20) | No | Unique identifier of the user (agent) |
+| `userType` | smallint(6) | Yes | Type of user (e.g., agent, admin, etc.) |
+| `vbAccount` | varchar(20) | Yes | Account identifier associated with the session |
+| `start_session` | decimal(18,0) | Yes | Session start timestamp (epoch format) |
+| `end_session` | decimal(18,0) | Yes | Session end timestamp (epoch format) |
+| `reason` | text | Yes | Optional description of the session termination reason |
+
+---
+
+## Timestamp Fields
+
+Both `start_session` and `end_session` are stored as **epoch timestamps** in decimal format.
+
+Example conversion in SQL:
+
+```sql
+SELECT
+    DATE(FROM_UNIXTIME(start_session/1000)) AS login_date,
+    COUNT(*) AS total_logins,
+    COUNT(DISTINCT userID) AS unique_users_logged_in
+FROM vbsession
+WHERE vbAccount = 'YOUR_ACCOUNT_ID'
+GROUP BY DATE(FROM_UNIXTIME(start_session/1000))
+ORDER BY DATE(FROM_UNIXTIME(start_session/1000));
