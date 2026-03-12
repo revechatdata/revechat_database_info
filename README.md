@@ -1430,6 +1430,17 @@ WHERE isDeleted = 0 OR isDeleted IS NULL
 GROUP BY accountId;
 ```
 
+##  Ticket creation source
+```sql
+SELECT 
+    accountId,
+    creationSource,
+    COUNT(id) AS ticket_count
+FROM ticketentity
+GROUP BY accountId, creationSource
+ORDER BY accountId;
+```
+
 # ticketconversationentity Table Documentation
 
 ## Overview
