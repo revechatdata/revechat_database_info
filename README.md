@@ -1397,6 +1397,38 @@ Each record represents a ticket created within the system and contains reference
 | ticketStr | longtext | Yes | NULL | Serialized or JSON representation of the full ticket data including details, messages, and metadata. |
 
 ---
+##  Total Ticket Count Account wise
+```sql
+SELECT 
+    accountId,
+    COUNT(id) AS total_tickets
+FROM ticketentity
+WHERE isDeleted = 0 OR isDeleted IS NULL
+GROUP BY accountId
+ORDER BY total_tickets DESC;
+```
+##  Monthly Ticket Count Account wise
+```sql
+SELECT 
+    accountId,
+    DATE_FORMAT(FROM_UNIXTIME(created/1000), '%Y-%m') AS month,
+    COUNT(id) AS tickets_created
+FROM ticketentity
+WHERE isDeleted = 0 OR isDeleted IS NULL
+GROUP BY accountId, month
+ORDER BY accountId, month;
+```
+##  Overdue Ticket Ratio
+```sql
+SELECT 
+    accountId,
+    COUNT(id) AS total_tickets,
+    SUM(isOverDue) AS overdue_tickets,
+    ROUND(SUM(isOverDue)/COUNT(id) * 100,2) AS overdue_percentage
+FROM ticketentity
+WHERE isDeleted = 0 OR isDeleted IS NULL
+GROUP BY accountId;
+```
 
 # ticketconversationentity Table Documentation
 
